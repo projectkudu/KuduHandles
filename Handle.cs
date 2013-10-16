@@ -171,9 +171,10 @@ namespace KuduHandles
                     IntPtr.Zero))
                 {
                     var wwwrootPath = GetNameFromHandle(wwwrootHandle);
+                    wwwrootPath = Regex.Replace(wwwrootPath, Regex.Escape("\\" + SiteWwwroot), String.Empty,
+                        RegexOptions.IgnoreCase);
                     UncPath = Regex.Replace(wwwrootPath, Regex.Escape(NetworkDevicePrefix), NetworkPrefix,
                         RegexOptions.IgnoreCase);
-
                 }
             DeviceMap = new Dictionary<string, string>();
 
