@@ -16,10 +16,10 @@ namespace KuduHandles
 
             try
             {
-                foreach (var s in SystemUtility.GetHandles(Int32.Parse(args[0])).Where(handle => (handle.Type == HandleType.File)).ToList())
+                foreach (var fileHandle in SystemUtility.GetHandles(Int32.Parse(args[0])).Where(handle => (handle.Type == HandleType.File)).ToList())
                 {
-                    if (s.DosFilePath != null)
-                        Console.WriteLine(s.DosFilePath);
+                    if (fileHandle.DosFilePath != null)
+                        Console.WriteLine(fileHandle.DosFilePath);
                 }
             }
             catch
