@@ -19,18 +19,18 @@ namespace KuduHandles
                 foreach (var fileHandle in SystemUtility.GetHandles(Int32.Parse(args[0])).Where(handle => (handle.Type == HandleType.File)).ToList())
                 {
                     if (fileHandle.DosFilePath != null)
-                        Console.WriteLine(fileHandle.DosFilePath);
+                        Console.Out.WriteLine(fileHandle.DosFilePath);
                 }
             }
             catch
             {
-                Console.WriteLine("[Error] Can't get open file handles for process {0}", args[0]);
+                Console.Error.WriteLine("[Error] Can't get open file handles for process {0}", args[0]);
             }
         }
 
         private static void PrintUsage()
         {
-            Console.WriteLine("[Usage] KuduHandles.exe <ProcessId>");
+            Console.Error.WriteLine("[Usage] KuduHandles.exe <ProcessId>");
         }
     }
 }
