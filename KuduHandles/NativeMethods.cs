@@ -35,7 +35,8 @@ namespace KuduHandles
 
     enum DUPLICATE_HANDLE_OPTIONS : uint
     {
-        DUPLICATE_SAME_ACCESS = 0x00000002
+        DUPLICATE_SAME_ACCESS = 0x00000002,
+        DUPLICATE_CLOSE_SOURCE = 0x00000001
     }
 
     [StructLayout(LayoutKind.Sequential)]

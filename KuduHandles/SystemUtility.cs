@@ -63,5 +63,28 @@ namespace KuduHandles
                     Marshal.FreeHGlobal(ptr);
             }
         }
+
+        public static void CloseHandle(uint processId, Handle fileHandle)
+        {
+            SafeGenericHandle inProcessSafeHandle;
+            using (var sourceProcessHandle =
+               NativeMethods.OpenProcess(PROCESS_ACCESS_RIGHTS.PROCESS_DUP_HANDLE, true,
+                   processId))
+            {
+                // To read info about a handle owned by another process we must duplicate it into ours
+                if (!NativeMethods.DuplicateHandle(sourceProcessHandle,
+                    (IntPtr)fileHandle.RawHandleValue,
+                    NativeMethods.GetCurrentProcess(),
+                    out inProcessSafeHandle,
+                    0,
+                    false,
+                    DUPLICATE_HANDLE_OPTIONS.DUPLICATE_CLOSE_SOURCE))
+                {
+                    return;
+                }
+                NativeMethods.CloseHandle(inProcessSafeHandle.DangerousGetHandle());
+                inProcessSafeHandle.SetHandleAsInvalid();
+            }
+        }
     }
 }

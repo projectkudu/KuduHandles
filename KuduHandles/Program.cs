@@ -8,18 +8,38 @@ namespace KuduHandles
         static void Main(string[] args)
         {
 
-            if (args.Length != 1)
+            if (args.Length < 1)
             {
                 PrintUsage();
                 return;
             }
-
+            var closeMode = args[0].Equals("-c", StringComparison.OrdinalIgnoreCase);
+            ushort handleToClose = 0;
+            uint processId = 0;
+            if (closeMode)
+            {
+                handleToClose = ushort.Parse(args[2]);
+                processId = uint.Parse(args[1]);
+            }
+            else
+            {
+                processId = uint.Parse(args[0]);
+            }
             try
             {
-                foreach (var fileHandle in SystemUtility.GetHandles(Int32.Parse(args[0])).Where(handle => (handle.Type == HandleType.File)).ToList())
+                foreach (var fileHandle in SystemUtility.GetHandles((int)processId).Where(handle => (handle.Type == HandleType.File)).ToList())
                 {
                     if (fileHandle.DosFilePath != null)
-                        Console.Out.WriteLine(fileHandle.DosFilePath);
+                    {
+                        if (closeMode && fileHandle.RawHandleValue == handleToClose)
+                        {
+                            SystemUtility.CloseHandle(processId, fileHandle);
+                        }
+                        else if (!closeMode)
+                        {
+                            Console.Out.WriteLine("[{0}] {1}", fileHandle.RawHandleValue, fileHandle.DosFilePath);
+                        }
+                    }
                 }
             }
             catch
@@ -31,6 +51,7 @@ namespace KuduHandles
         private static void PrintUsage()
         {
             Console.Error.WriteLine("[Usage] KuduHandles.exe <ProcessId>");
+            Console.Error.WriteLine("[Usage] KuduHandles.exe -c <ProcessId> <HandleId>");
         }
     }
 }
