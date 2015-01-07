@@ -14,7 +14,7 @@ namespace KuduHandles
 
     enum SYSTEM_INFORMATION_CLASS
     {
-        SystemHandleInformation = 16
+        SystemHandleInformation = 64
     }
 
     enum OBJECT_INFORMATION_CLASS
@@ -42,12 +42,14 @@ namespace KuduHandles
     [StructLayout(LayoutKind.Sequential)]
     struct SYSTEM_HANDLE_ENTRY
     {
-        internal uint OwnerProcessId;
-        internal byte ObjectTypeNumber;
-        internal byte Flags;
-        internal ushort Handle;
-        internal IntPtr Object;
+        internal IntPtr Object1;
+        internal long OwnerProcessId;
+        internal long Handle;
         internal int GrantedAccess;
+        internal short CreaterBackTrace;
+        internal short ObjectTypeIndex;
+        internal uint HandleAttribute;
+        internal int Object;
     }
 
     [StructLayout(LayoutKind.Sequential)]
