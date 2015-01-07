@@ -37,7 +37,7 @@ namespace KuduHandles
 
         private readonly TimeSpan _ntQueryObjectTimeout = TimeSpan.FromMilliseconds(50);
 
-        private static Dictionary<byte, string> RawTypeMap { get; set; }
+        private static Dictionary<ushort, string> RawTypeMap { get; set; }
 
         public static string HomePath { get; set; }
 
@@ -47,9 +47,9 @@ namespace KuduHandles
 
         public uint ProcessId { get; private set; }
 
-        public ushort RawHandleValue { get; private set; }
+        public uint RawHandleValue { get; private set; }
 
-        public byte RawType { get; private set; }
+        public ushort RawType { get; private set; }
 
         private readonly SafeGenericHandle _inProcessSafeHandle;
 
@@ -156,7 +156,7 @@ namespace KuduHandles
 
         static Handle()
         {
-            RawTypeMap = new Dictionary<byte, string>();
+            RawTypeMap = new Dictionary<ushort, string>();
             HomePath = Environment.ExpandEnvironmentVariables(HomeEnvironmentVariable) == HomeEnvironmentVariable
                 ? null
                 : Environment.ExpandEnvironmentVariables(HomeEnvironmentVariable);
@@ -189,10 +189,10 @@ namespace KuduHandles
             DeviceMap.Add(NetworkDevicePrefix, NetworkPrefix);
         }
 
-        public Handle(uint processId, ushort handle, byte rawType)
+        public Handle(ulong processId, ulong handle, ushort rawType)
         {
-            ProcessId = processId;
-            RawHandleValue = handle;
+            ProcessId = (uint) processId;
+            RawHandleValue = (uint) handle;
             RawType = rawType;
 
             using (var sourceProcessHandle =

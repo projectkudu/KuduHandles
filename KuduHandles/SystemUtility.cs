@@ -38,20 +38,20 @@ namespace KuduHandles
                     yield break;
 
                 long handleCount = Marshal.ReadInt64(ptr);
-                int offset = sizeof(long)*2;
-                int size = Marshal.SizeOf(typeof(SYSTEM_HANDLE_ENTRY));
+                int offset = sizeof(long) + sizeof(long);
+                int size = Marshal.SizeOf(typeof(SYSTEM_HANDLE_TABLE_ENTRY_INFO_EX));
                 for (int i = 0; i < handleCount; i++)
                 {
                     var handleEntry =
-                        (SYSTEM_HANDLE_ENTRY)Marshal.PtrToStructure(
-                        IntPtr.Add(ptr, offset), typeof(SYSTEM_HANDLE_ENTRY));
+                        (SYSTEM_HANDLE_TABLE_ENTRY_INFO_EX)Marshal.PtrToStructure(
+                        IntPtr.Add(ptr, offset), typeof(SYSTEM_HANDLE_TABLE_ENTRY_INFO_EX));
 
-                    if (handleEntry.OwnerProcessId == processId)
+                    if ((uint) handleEntry.UniqueProcessId == processId)
                     {
                         yield return new Handle(
-                            handleEntry.OwnerProcessId,
-                            handleEntry.Handle,
-                            handleEntry.ObjectTypeNumber);
+                            handleEntry.UniqueProcessId,
+                            handleEntry.HandleValue,
+                            handleEntry.ObjectTypeIndex);
                     }
 
                     offset += size;

@@ -39,16 +39,24 @@ namespace KuduHandles
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    struct SYSTEM_HANDLE_ENTRY
+    struct SYSTEM_HANDLE_TABLE_ENTRY_INFO_EX
     {
-        internal IntPtr Object1;
-        internal long OwnerProcessId;
-        internal long Handle;
-        internal int GrantedAccess;
-        internal short CreaterBackTrace;
-        internal short ObjectTypeIndex;
-        internal uint HandleAttribute;
-        internal int Object;
+        internal IntPtr Object;
+        internal ulong UniqueProcessId;
+        internal ulong HandleValue;
+        internal uint GrantedAccess;
+        internal ushort CreatorBackTraceIndex;
+        internal ushort ObjectTypeIndex;
+        internal uint HandleAttributes;
+        internal uint Reserved;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct SYSTEM_HANDLE_INFORMATION_EX
+    {
+        internal ulong NumberOfHandles;
+        internal ulong Reserved;
+        internal SYSTEM_HANDLE_TABLE_ENTRY_INFO_EX[] Handles;
     }
 
     [StructLayout(LayoutKind.Sequential)]
