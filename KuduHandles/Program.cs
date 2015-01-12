@@ -14,11 +14,16 @@ namespace KuduHandles
                 return;
             }
             var closeMode = args[0].Equals("-c", StringComparison.OrdinalIgnoreCase);
+            var verboseMode = args[0].Equals("-v", StringComparison.OrdinalIgnoreCase);
             ushort handleToClose = 0;
             uint processId = 0;
             if (closeMode)
             {
                 handleToClose = ushort.Parse(args[2]);
+                processId = uint.Parse(args[1]);
+            }
+            else if (verboseMode)
+            {
                 processId = uint.Parse(args[1]);
             }
             else
@@ -37,7 +42,7 @@ namespace KuduHandles
                         }
                         else if (!closeMode)
                         {
-                            Console.Out.WriteLine("[{0}] {1}", fileHandle.RawHandleValue, fileHandle.DosFilePath);
+                            Console.Out.WriteLine(verboseMode ? "[{0}] {1}" : "{1}", fileHandle.RawHandleValue, fileHandle.DosFilePath);
                         }
                     }
                 }
@@ -51,6 +56,7 @@ namespace KuduHandles
         private static void PrintUsage()
         {
             Console.Error.WriteLine("[Usage] KuduHandles.exe <ProcessId>");
+            Console.Error.WriteLine("[Usage] KuduHandles.exe -v <ProcessId>");
             Console.Error.WriteLine("[Usage] KuduHandles.exe -c <ProcessId> <HandleId>");
         }
     }
