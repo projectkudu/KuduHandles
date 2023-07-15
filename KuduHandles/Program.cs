@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace KuduHandles
@@ -42,7 +43,7 @@ namespace KuduHandles
                 {
                     var handles = SystemUtility.GetHandles((int)processId);
                     var typeCounts = handles
-                        .GroupBy(handle => string.IsNullOrEmpty(handle.TypeString) ? handle.RawType.ToString() : handle.TypeString)
+                        .GroupBy(handle => string.IsNullOrWhiteSpace(handle.TypeString) ? handle.RawType.ToString() : handle.TypeString)
                         .Select(x => new KeyValuePair<string, int>(x.Key, x.Count()))
                         .OrderByDescending(x => x.Value);
 
@@ -59,9 +60,20 @@ namespace KuduHandles
                 else if (listMode)
                 {
                     var handles = SystemUtility.GetHandles((int)processId);
+                    if (!string.IsNullOrWhiteSpace(args[2]))
+                    {
+                        var type = args[2].Trim();
+                        handles = handles.Where(handle => string.Equals(type, handle.TypeString) || string.Equals(type, handle.RawType));
+                    }
+
+                    if(!handles.Any())
+                    {
+                        Console.Out.WriteLine("Cannot find any handle");
+                    }
+
                     foreach (var handle in handles)
                     {
-                        Console.Out.WriteLine("[{0}] {1} {2}", handle.RawHandleValue, string.IsNullOrEmpty(handle.TypeString) ? handle.RawType.ToString() : handle.TypeString, handle.DosFilePath);
+                        Console.Out.WriteLine("[{0}] {1} {2}", handle.RawHandleValue, string.IsNullOrWhiteSpace(handle.TypeString) ? handle.RawType.ToString() : handle.TypeString, handle.DosFilePath);
                     }
                 }
 
@@ -110,6 +122,7 @@ namespace KuduHandles
         {
             Console.Error.WriteLine("[Usage] KuduHandles.exe <ProcessId>");
             Console.Error.WriteLine("[Usage] KuduHandles.exe -l <ProcessId>");
+            Console.Error.WriteLine("[Usage] KuduHandles.exe -l <ProcessId> <HandleType>");
             Console.Error.WriteLine("[Usage] KuduHandles.exe -s <ProcessId>");
             Console.Error.WriteLine("[Usage] KuduHandles.exe -v <ProcessId>");
             Console.Error.WriteLine("[Usage] KuduHandles.exe -c <ProcessId> <HandleId>");
